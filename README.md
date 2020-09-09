@@ -1,3 +1,49 @@
+# Labs26-Apollo-Team-A Backend
+
+> https://
+
+**BREAKING NEWS: This gets updated regularly...😀😂** 
+
+* List of API detail. Note: Some of the routes are in progress!!!!
+
+| Method | Endpoint                                  | Description                   | Auth Required |
+| ------ | ----------------------------------------- | ----------------------------- | :-----------: |
+| GET    | /                                         | Base endpoint                 |      [ ]      |
+| GET    | /profile/                                 | Get all users                 |      [x]      |
+| GET    | /profile/:id                              | Get user by id                |      [x]      |
+| GET    | /context                                  | Get all context               |      [x]      |
+| GET    | /context/:id                              | Get context by id             |      [x]      |
+| GET    | /question                                 | Get all questions             |      [x]      |
+| GET    | /question/:id                             | Get question by id            |      [x]      |
+| GET    | /topic                                    | Get all topics                |      [x]      |
+| GET    | /topic/:id                                | Get topic by id               |      [x]      |
+| GET    | /response                                 | Get all responses             |      [x]      |
+| GET    | /response/:id                             | Get response by id            |      [x]      |
+| GET    | /thread                                   | Get all thread                |      [x]      |
+| GET    | /thread/:id                               | Get thread by id              |      [x]      |
+| GET    | /notification                             | Get all notification          |      [x]      |
+| GET    | /notification/:id                         | Get notification by id        |      [x]      |
+| POST   | /profile                                  | Creates new user              |      [x]      |
+| POST   | /topic                                    | Creates new topic             |      [x]      |
+| POST   | /response                                 | Creates new response          |      [x]      |
+| POST   | /thread                                   | Creates new thread            |      [x]      |
+| POST   | /notification                             | Creates new notification      |      [x]      |
+| PUT   | /profile                                   | Updates user profile          |      [x]      |
+| PUT   | /topic                                     | Updates topic                 |      [x]      |
+| PUT   | /response                                  | Updates response              |      [x]      |
+| PUT   | /thread                                    | Updates thread                |      [x]      |
+| PUT   | /notification                              | Updates notification          |      [x]      |
+| DEL   | /profile/:id                               | Deletes user                  |      [x]      |
+| DEL   | /topic/:id                                 | Deletes topic user            |      [x]      |
+| DEL   | /response/:id                              | Deletes response              |      [x]      |
+| DEL   | /thread/:id                                | Deletes thread                |      [x]      |
+| DEL   | /notification/id                           | Deletes notification          |      [x]      |
+
+
+> Login needs OKTA Authorization
+> Mock User response
+
+
 # Basic Node API
 
 Welcome to your `Basic Node API Repository`. Use this to start your own Greenfield Project using nodejs, express and common industry standards.
