@@ -22,6 +22,13 @@ const swaggerUIOptions = {
 const indexRouter = require('./index/indexRouter');
 const profileRouter = require('./profile/profileRouter');
 const dsRouter = require('./dsService/dsRouter');
+const contextRouter = require('./context/contextRouter')
+const questionRouter = require('./question/questionRouter')
+const topicRouter = require('./topic/topicRouter')
+const responseRouter = require('./response/responseRouter')
+const threadRouter = require('./thread/threadRouter')
+const userimageRouter = require('./userimage/userimageRouter')
+const notificationRouter = require('./notification/notificationRouter')
 
 const app = express();
 
@@ -46,11 +53,19 @@ app.use(
 app.use(logger('dev'));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(express.json());
 
 // application routes
 app.use('/', indexRouter);
 app.use(['/profile', '/profiles'], profileRouter);
 app.use('/data', dsRouter);
+app.use('/context', contextRouter);
+app.use('/question', questionRouter);
+app.use('/topic', topicRouter);
+app.use('/response', responseRouter);
+app.use('/thread', threadRouter);
+app.use('/userimage', userimageRouter);
+app.use('/notification', notificationRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
