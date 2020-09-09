@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 module.exports = {
   expectedAudience: ['api://default', `${process.env.OKTA_CLIENT_ID}`],
   config: {
