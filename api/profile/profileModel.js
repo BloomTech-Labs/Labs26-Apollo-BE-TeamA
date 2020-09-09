@@ -1,41 +1,41 @@
 const db = require('../../data/db-config');
 
 const findAll = async () => {
-  return await db('profiles');
+  return await db('users');
 };
 
 const findBy = (filter) => {
-  return db('profiles').where(filter);
+  return db('users').where(filter);
 };
 
 const findById = async (id) => {
-  return db('profiles').where({ id }).first().select('*');
+  return db('users').where({ id }).first().select('*');
 };
 
-const create = async (profile) => {
-  return db('profiles').insert(profile).returning('*');
+const create = async (user) => {
+  return db('users').insert(user).returning('*');
 };
 
-const update = (id, profile) => {
-  console.log(profile);
-  return db('profiles')
+const update = (id, user) => {
+  console.log(user);
+  return db('users')
     .where({ id: id })
     .first()
-    .update(profile)
+    .update(user)
     .returning('*');
 };
 
 const remove = async (id) => {
-  return await db('profiles').where({ id }).del();
+  return await db('users').where({ id }).del();
 };
 
-const findOrCreateProfile = async (profileObj) => {
-  const foundProfile = await findById(profileObj.id).then((profile) => profile);
-  if (foundProfile) {
-    return foundProfile;
+const findOrCreateUser = async (UserObj) => {
+  const foundUser = await findById(UserObj.id).then((User) => User);
+  if (foundUser) {
+    return foundUser;
   } else {
-    return await create(profileObj).then((newProfile) => {
-      return newProfile ? newProfile[0] : newProfile;
+    return await create(UserObj).then((newUser) => {
+      return newUser ? newUser[0] : newUser;
     });
   }
 };
@@ -47,5 +47,5 @@ module.exports = {
   create,
   update,
   remove,
-  findOrCreateProfile,
+  findOrCreateUser,
 };
