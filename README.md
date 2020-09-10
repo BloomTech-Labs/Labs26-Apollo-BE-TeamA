@@ -2,7 +2,6 @@
 
 > https://apollo-a-api.herokuapp.com/
 
-# Database Design 
 > https://dbdesigner.page.link/HF9NWJ5kRDt3bjKp7
 
 **BREAKING NEWS: This gets updated regularly...😀😂** 
