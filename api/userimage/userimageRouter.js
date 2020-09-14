@@ -45,7 +45,7 @@ router.post('/:id/upload', upload.single('userimage'), (req, res) => {
         res.status(400).json({errorMessage: "Please provide user id to upload image."})
     } 
     else if (userid && userimage) {
-        Users.getUserById(userid)
+        Users.findById(userid)
         .then(user => {
             if(!user){
                 res.status(404).json({error: 'Failed to add image because no user with such id found'})
