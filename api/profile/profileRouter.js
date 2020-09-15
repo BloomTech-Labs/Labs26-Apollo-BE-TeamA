@@ -108,6 +108,30 @@ router.get('/', authRequired, function (req, res) {
  *      404:
  *        description: 'Profile not found'
  */
+router.get('/:id/details', authRequired, function (req, res) {
+  const id = String(req.params.id);
+  Profiles.findById(id)
+    .then((profile) => {
+      if (profile) {
+        Profiles.getAllTopicsbyUser(id)
+        .then (userprofile => {
+          if (userprofile) {
+            res.status(200).json(userprofile)
+          }
+          else {
+            res.status(404).json({message: "Failed to get user profile. Try again later."})
+          }
+        })
+      } 
+      else {
+        res.status(404).json({ error: 'ProfileNotFound' });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ error: err.message });
+    });
+});
+
 router.get('/:id', authRequired, function (req, res) {
   const id = String(req.params.id);
   Profiles.findById(id)

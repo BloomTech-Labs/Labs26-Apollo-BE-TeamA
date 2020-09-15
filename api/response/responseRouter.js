@@ -29,6 +29,31 @@ router.get('/:id', authRequired, function (req, res) {
     });
 });
 
+router.get('/:id/details', authRequired, function (req, res) {
+  const id = String(req.params.id);
+  Responses.findById(id)
+    .then((response) => {
+      if (response) {
+        Responses.getAllReplyonResponse(id)
+        .then (responsedetail => {
+          if (responsedetail) {
+            res.status(200).json(responsedetail)
+          }
+          else {
+            res.status(404).json({message: "Failed to get response detail. Try again later."})
+          }
+        })
+      } 
+      else {
+        res.status(404).json({ error: 'ResponseNotFound' });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ error: err.message });
+    });
+});
+
+
 router.post('/', authRequired, async (req, res) => {
     const response = req.body;
     if (response) {
