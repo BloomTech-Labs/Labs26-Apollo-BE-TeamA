@@ -5,6 +5,7 @@
   "license": "MIT",
   "repository": "github:Lambda-School-Labs/labs-api-starter",
   "scripts": {
+    "server": "nodemon server.js",
     "start": "node server.js",
     "watch:dev": "nodemon",
     "lint": "npx eslint .",

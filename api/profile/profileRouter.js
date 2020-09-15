@@ -1,6 +1,6 @@
-const express = require('express');
-const authRequired = require('../middleware/authRequired');
-const Profiles = require('./profileModel');
+const express = require("express");
+const authRequired = require("../middleware/authRequired");
+const Profiles = require("./profileModel");
 const router = express.Router();
 
 /**
@@ -62,7 +62,7 @@ const router = express.Router();
  *      403:
  *        $ref: '#/components/responses/UnauthorizedError'
  */
-router.get('/', authRequired, function (req, res) {
+router.get("/", authRequired, function (req, res) {
   Profiles.findAll()
     .then((profiles) => {
       res.status(200).json(profiles);
@@ -108,14 +108,14 @@ router.get('/', authRequired, function (req, res) {
  *      404:
  *        description: 'Profile not found'
  */
-router.get('/:id', authRequired, function (req, res) {
+router.get("/:id", authRequired, function (req, res) {
   const id = String(req.params.id);
   Profiles.findById(id)
     .then((profile) => {
       if (profile) {
         res.status(200).json(profile);
       } else {
-        res.status(404).json({ error: 'ProfileNotFound' });
+        res.status(404).json({ error: "ProfileNotFound" });
       }
     })
     .catch((err) => {
@@ -159,7 +159,7 @@ router.get('/:id', authRequired, function (req, res) {
  *                profile:
  *                  $ref: '#/components/schemas/Profile'
  */
-router.post('/', authRequired, async (req, res) => {
+router.post("/", authRequired, async (req, res) => {
   const profile = req.body;
   if (profile) {
     const id = profile.id || 0;
@@ -170,10 +170,10 @@ router.post('/', authRequired, async (req, res) => {
           await Profiles.create(profile).then((profile) =>
             res
               .status(200)
-              .json({ message: 'profile created', profile: profile[0] })
+              .json({ message: "profile created", profile: profile[0] })
           );
         } else {
-          res.status(400).json({ message: 'profile already exists' });
+          res.status(400).json({ message: "profile already exists" });
         }
       });
     } catch (e) {
@@ -181,7 +181,7 @@ router.post('/', authRequired, async (req, res) => {
       res.status(500).json({ message: e.message });
     }
   } else {
-    res.status(404).json({ message: 'Profile missing' });
+    res.status(404).json({ message: "Profile missing" });
   }
 });
 /**
@@ -218,7 +218,7 @@ router.post('/', authRequired, async (req, res) => {
  *                profile:
  *                  $ref: '#/components/schemas/Profile'
  */
-router.put('/', authRequired, (req, res) => {
+router.put("/", authRequired, (req, res) => {
   const profile = req.body;
   if (profile) {
     const id = profile.id || 0;
@@ -228,7 +228,7 @@ router.put('/', authRequired, (req, res) => {
           .then((updated) => {
             res
               .status(200)
-              .json({ message: 'profile created', profile: updated[0] });
+              .json({ message: "profile created", profile: updated[0] });
           })
           .catch((err) => {
             res.status(500).json({
@@ -275,7 +275,7 @@ router.put('/', authRequired, (req, res) => {
  *                profile:
  *                  $ref: '#/components/schemas/Profile'
  */
-router.delete('/:id', (req, res) => {
+router.delete("/:id", (req, res) => {
   const id = req.params.id;
   try {
     Profiles.findById(id).then((profile) => {
