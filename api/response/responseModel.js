@@ -33,14 +33,15 @@ async function getAllReplyonResponse(id) {
   const response = await (
       db('responses')
       .select('id', 'questionid', 'response', 'respondedby', 'topicid')
-      .where('id', id)
+      .where( {id: id} )
   )
-  topicDetail = {
+  responseDetail = {
+      ...response,
       replies: await db('threads')
       .select('id', 'reply', 'repliedby')
-      .where('responseid', id),
+      .where( {responseid: id} ),
   }
-  return topicDetail
+  return responseDetail
 }
 
 
