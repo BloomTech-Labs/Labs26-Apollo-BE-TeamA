@@ -33,19 +33,19 @@ async function getAllAboutTopic(id) {
   const topic = await (
       db('topics')
       .select('id', 'leaderid', 'topicname', 'contextid', 'joincode')
-      .where('id', id)
+      .where( {id: id} )
   )
   topicDetail = {
       ...topic,
       questions: await db('topic_questions')
       .select('id', 'questionid')
-      .where('topicid', id),
+      .where( {topicid: id} ),
       responses: await db('responses')
       .select('id', 'question_id', 'responses', 'respondedby')
-      .where('topicid', id),
+      .where( {topicid: id} ),
       notifications: await db('notifications')
       .select('id', 'sentto', 'notification')
-      .where('topicid', id),
+      .where( {topicid: id} ),
   }
   return topicDetail
 }

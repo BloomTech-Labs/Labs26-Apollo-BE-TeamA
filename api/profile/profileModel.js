@@ -50,16 +50,16 @@ async function getAllTopicsbyUser(id) {
       ...user,
       topics: await db('topics')
       .select('id', 'topicname', 'topicfrequency', 'contextid', 'joincode')
-      .where('leaderid', id),
+      .where({ leaderid: id }),
       responses: await db('responses')
       .select('id', 'topicid', 'question_id', 'responses')
-      .where('respondedby', id),
+      .where( {respondedby: id} ),
       notifications: await db('notifications')
       .select('id', 'notification', 'topicid')
-      .where('sentto', id),
+      .where( {sentto: id} ),
       threads: await db('threads')
       .select('id', 'responseid', 'replies')
-      .where('repliedby', 'id')
+      .where( {repliedby: id })
   }
   return userDetail
 }
