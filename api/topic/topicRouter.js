@@ -29,6 +29,30 @@ router.get('/:id', authRequired, function (req, res) {
     });
 });
 
+router.get('/:id/details', authRequired, function (req, res) {
+  const id = String(req.params.id);
+  Topics.findById(id)
+    .then((topic) => {
+      if (topic) {
+        Topics.getAllAboutTopic(id)
+        .then (topicdetail => {
+          if (topicdetail) {
+            res.status(200).json(topicdetail)
+          }
+          else {
+            res.status(404).json({message: "Failed to get topic details. Try again later."})
+          }
+        })
+      } 
+      else {
+        res.status(404).json({ error: 'TopicNotFound' });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ error: err.message });
+    });
+});
+
 router.post('/', authRequired, async (req, res) => {
     const topic = req.body;
     if (topic) {

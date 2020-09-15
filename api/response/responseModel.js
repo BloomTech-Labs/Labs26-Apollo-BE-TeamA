@@ -29,6 +29,21 @@ const remove = async (id) => {
   return await db('responses').where({ id }).del();
 };
 
+async function getAllReplyonResponse(id) {
+  const response = await (
+      db('responses')
+      .select('id', 'questionid', 'response', 'respondedby', 'topicid')
+      .where('id', id)
+  )
+  topicDetail = {
+      replies: await db('threads')
+      .select('id', 'reply', 'repliedby')
+      .where('responseid', id),
+  }
+  return topicDetail
+}
+
+
 module.exports = {
   findAll,
   findBy,
@@ -36,4 +51,5 @@ module.exports = {
   create,
   update,
   remove,
+  getAllReplyonResponse
 };
