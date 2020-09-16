@@ -52,7 +52,7 @@ async function getAllTopicsbyUser(id) {
       .select('id', 'topicname', 'topicfrequency', 'contextid', 'joincode')
       .where({ leaderid: id }),
       responses: await db('responses')
-      .select('id', 'topicid', 'question_id', 'responses')
+      .select('id', 'topicid', 'questionid', 'responses')
       .where( {respondedby: id} ),
       notifications: await db('notifications')
       .select('id', 'notification', 'topicid')

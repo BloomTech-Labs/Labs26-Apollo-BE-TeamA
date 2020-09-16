@@ -44,7 +44,6 @@ async function getAllReplyonResponse(id) {
   return responseDetail
 }
 
-
 module.exports = {
   findAll,
   findBy,
