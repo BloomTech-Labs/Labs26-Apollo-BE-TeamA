@@ -41,7 +41,7 @@ async function getAllAboutTopic(id) {
       .select('id', 'questionid')
       .where( {topicid: id} ),
       responses: await db('responses')
-      .select('id', 'question_id', 'responses', 'respondedby')
+      .select('id', 'questionid', 'responses', 'respondedby')
       .where( {topicid: id} ),
       notifications: await db('notifications')
       .select('id', 'sentto', 'notification')
