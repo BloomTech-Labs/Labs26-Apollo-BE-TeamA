@@ -1,15 +1,11 @@
 const supertest = require("supertest");
 const server = require("../../api/app.js");
 
+// GET TESTING
 describe("Can retrieve info on questions", () => {
   it("can pull question data", () => {
     return supertest(server)
-      .get(
-        "/question"
-        //  {
-        //   headers: { Authorization: `Bearer ${process.env.TOKENID}` },
-        // }
-      )
+      .get("/question")
       .then((res) => {
         expect(res.status).toBe(200);
       });
@@ -45,5 +41,55 @@ describe("GET requests for endpoint /question/:id", () => {
       .then((res) => {
         expect(res.status).toBe(404);
       });
+  });
+});
+
+// POST TESTING
+describe("POST / can post to API", () => {
+  it("should return status code 500", () => {
+    return supertest(server)
+      .post("/question")
+      .then((res) => {
+        expect(res.status).toBe(500);
+      });
+  });
+  it("should return status code 400, already created question", () => {
+    return supertest(server).post("/question").send({
+      id: 1,
+    });
+    expect(res.body).toMatchObject({
+      message: "question already exists",
+    });
+  });
+});
+
+// PUT TESTING
+describe("PUT / can update data", () => {
+  it("can return status code 500", () => {
+    return supertest(server).put("/question").send({});
+    expect(res.status).toBe(500);
+  });
+  it("can return status code of 404", () => {
+    return supertest(server).put("/question/1").send({});
+    expect(res.status).toBe(404);
+    expect(res.body).toMatchObject({ message: "Not Found" });
+  });
+});
+
+// DELETE TESTING
+describe("DELETE / can delete a question", () => {
+  it("can post a new question", () => {
+    return supertest(server).post("/question").send({
+      id: 7,
+      type: "Request Questions",
+      style: "Text",
+      question: "What is your favorite dessert?",
+    });
+    expect(res.status).toBe(200);
+  });
+  it("can delete newly added question", () => {
+    return supertest(server).delete("/question/7");
+    expect(res.status).toBe(200);
+    expect(res.message).toBe("question '7' was deleted.");
   });
 });
