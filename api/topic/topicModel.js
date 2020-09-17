@@ -29,6 +29,28 @@ const remove = async (id) => {
   return await db('topics').where({ id }).del();
 };
 
+async function getAllAboutTopic(id) {
+  const topic = await (
+      db('topics')
+      .select('id', 'leaderid', 'topicname', 'contextid', 'joincode')
+      .where( {id: id} )
+  )
+  topicDetail = {
+      ...topic,
+      questions: await db('topic_questions')
+      .select('id', 'questionid')
+      .where( {topicid: id} ),
+      responses: await db('responses')
+      .select('id', 'question_id', 'responses', 'respondedby')
+      .where( {topicid: id} ),
+      notifications: await db('notifications')
+      .select('id', 'sentto', 'notification')
+      .where( {topicid: id} ),
+  }
+  return topicDetail
+}
+
+
 module.exports = {
   findAll,
   findBy,
@@ -36,4 +58,5 @@ module.exports = {
   create,
   update,
   remove,
+  getAllAboutTopic
 };

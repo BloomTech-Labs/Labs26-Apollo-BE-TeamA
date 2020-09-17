@@ -1,7 +1,7 @@
-const createError = require('http-errors');
-const OktaJwtVerifier = require('@okta/jwt-verifier');
-const oktaVerifierConfig = require('../../config/okta');
-const Profiles = require('../profile/profileModel');
+const createError = require("http-errors");
+const OktaJwtVerifier = require("@okta/jwt-verifier");
+const oktaVerifierConfig = require("../../config/okta");
+const Profiles = require("../profile/profileModel");
 const oktaJwtVerifier = new OktaJwtVerifier(oktaVerifierConfig.config);
 
 const makeProfileObj = (claims) => {
@@ -18,10 +18,10 @@ const makeProfileObj = (claims) => {
  */
 const authRequired = async (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization || '';
+    const authHeader = req.headers.authorization || "";
     const match = authHeader.match(/Bearer (.+)/);
 
-    if (!match) throw new Error('Missing idToken');
+    if (!match) throw new Error("Missing idToken");
 
     const idToken = match[1];
     oktaJwtVerifier
@@ -32,7 +32,7 @@ const authRequired = async (req, res, next) => {
         if (profile) {
           req.profile = profile;
         } else {
-          throw new Error('Unable to process idToken');
+          throw new Error("Unable to process idToken");
         }
         next();
       });
@@ -40,5 +40,10 @@ const authRequired = async (req, res, next) => {
     next(createError(401, err.message));
   }
 };
+
+// UNCOMMENT BELOW AND COMMENT ABOVE FOR TEST FILES TO PASS THE AUTHENTICATION
+// const authRequired = (req, res, next) => {
+//   next();
+// };
 
 module.exports = authRequired;

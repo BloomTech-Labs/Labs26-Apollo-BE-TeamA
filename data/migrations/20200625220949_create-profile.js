@@ -23,7 +23,6 @@ exports.up = (knex) => {
     })
     .createTable('questions', function (table) {
       table.increments();
-      table.integer('contextid').unsigned().notNullable().references('id').inTable('contexts').onDelete('CASCADE').onUpdate('CASCADE');
       table.enum('type', ['Context Questions', 'Request Questions']).defaultTo('Context Questions');
       table.enum('style', ['Text', 'Star Rating', 'Yes or No', 'Multiple Choice', 'URL']).defaultTo('Text');
       table.text('question').notNullable()
@@ -34,10 +33,15 @@ exports.up = (knex) => {
       table.string('topicname').notNullable();
       table.enum('topicfrequency', ['Daily', 'Weekly', 'Monthly', 'Off']).defaultTo('Off');
       table.integer('contextid').unsigned().notNullable().references('id').inTable('contexts').onDelete('CASCADE').onUpdate('CASCADE');
-      table.integer('questionid').unsigned().notNullable().references('id').inTable('questions').onDelete('CASCADE').onUpdate('CASCADE');
       table.string('joincode').unique();
       table.timestamps(true, true);
     })
+    .createTable('topic_questions', function (table) {
+      table.increments();
+      table.integer('topicid').unsigned().notNullable().references('id').inTable('topics').onDelete('CASCADE').onUpdate('CASCADE');
+      table.integer('questionid').unsigned().notNullable().references('id').inTable('questions').onDelete('CASCADE').onUpdate('CASCADE');
+    })
+
     .createTable('responses', function (table) {
       table.increments();
       table.integer('questionid').unsigned().notNullable().references('id').inTable('questions').onDelete('CASCADE').onUpdate('CASCADE');
@@ -50,6 +54,7 @@ exports.up = (knex) => {
       table.increments();
       table.integer('responseid').unsigned().notNullable().references('id').inTable('responses').onDelete('CASCADE').onUpdate('CASCADE');
       table.text('reply').notNullable();
+      table.string('repliedby').unsigned().notNullable().references('id').inTable('users').onDelete('CASCADE').onUpdate('CASCADE');
       table.timestamps(true, true);
     })
     .createTable('notifications', function (table) {

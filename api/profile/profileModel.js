@@ -40,6 +40,31 @@ const findOrCreateUser = async (UserObj) => {
   }
 };
 
+async function getAllTopicsbyUser(id) {
+  const user = await (
+      db('users')
+      .select('id', 'firstname', 'lastname')
+      .where('id', id)
+  )
+  userDetail = {
+      ...user,
+      topics: await db('topics')
+      .select('id', 'topicname', 'topicfrequency', 'contextid', 'joincode')
+      .where({ leaderid: id }),
+      responses: await db('responses')
+      .select('id', 'topicid', 'question_id', 'responses')
+      .where( {respondedby: id} ),
+      notifications: await db('notifications')
+      .select('id', 'notification', 'topicid')
+      .where( {sentto: id} ),
+      threads: await db('threads')
+      .select('id', 'responseid', 'replies')
+      .where( {repliedby: id })
+  }
+  return userDetail
+}
+
+
 module.exports = {
   findAll,
   findBy,
@@ -48,4 +73,5 @@ module.exports = {
   update,
   remove,
   findOrCreateUser,
+  getAllTopicsbyUser
 };

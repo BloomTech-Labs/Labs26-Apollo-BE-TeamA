@@ -29,6 +29,7 @@ const responseRouter = require('./response/responseRouter')
 const threadRouter = require('./thread/threadRouter')
 const userimageRouter = require('./userimage/userimageRouter')
 const notificationRouter = require('./notification/notificationRouter')
+const topicquestionRouter = require('./topic_question/topicquestionRouter')
 
 const app = express();
 
@@ -66,6 +67,7 @@ app.use('/response', responseRouter);
 app.use('/thread', threadRouter);
 app.use('/userimage', userimageRouter);
 app.use('/notification', notificationRouter);
+app.use('/topicquestion', topicquestionRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

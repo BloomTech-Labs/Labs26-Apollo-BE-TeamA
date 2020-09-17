@@ -25,26 +25,90 @@
 | GET    | /thread/:id                               | Get thread by id              |      [x]      |
 | GET    | /notification                             | Get all notification          |      [x]      |
 | GET    | /notification/:id                         | Get notification by id        |      [x]      |
+| GET    | /topicquestion                            | Get all topicid & questionid  |      [x]      |
+| GET    | /topicquestion/:id                        | Get topicid & questionid by id|      [x]      |
+| GET    | /profiles/:id/details                     | Get details of users by id    |      [x]      |
+| GET    | /topic/:id/details                        | Get details of topic by id    |      [x]      |
+| GET    | /response/:id/details                     | Get details of response by id |      [x]      |
 | POST   | /profile                                  | Creates new user              |      [x]      |
 | POST   | /topic                                    | Creates new topic             |      [x]      |
 | POST   | /response                                 | Creates new response          |      [x]      |
 | POST   | /thread                                   | Creates new thread            |      [x]      |
 | POST   | /notification                             | Creates new notification      |      [x]      |
-| PUT   | /profile                                   | Updates user profile          |      [x]      |
-| PUT   | /topic                                     | Updates topic                 |      [x]      |
-| PUT   | /response                                  | Updates response              |      [x]      |
-| PUT   | /thread                                    | Updates thread                |      [x]      |
-| PUT   | /notification                              | Updates notification          |      [x]      |
-| DEL   | /profile/:id                               | Deletes user                  |      [x]      |
-| DEL   | /topic/:id                                 | Deletes topic user            |      [x]      |
-| DEL   | /response/:id                              | Deletes response              |      [x]      |
-| DEL   | /thread/:id                                | Deletes thread                |      [x]      |
-| DEL   | /notification/id                           | Deletes notification          |      [x]      |
+| POST   | /topicquestion                            | Creates questionid- topicid   |      [x]      |
+| PUT    | /profile                                  | Updates user profile          |      [x]      |
+| PUT    | /topic                                    | Updates topic                 |      [x]      |
+| PUT    | /response                                 | Updates response              |      [x]      |
+| PUT    | /thread                                   | Updates thread                |      [x]      |
+| PUT    | /notification                             | Updates notification          |      [x]      |
+| DEL    | /profile/:id                              | Deletes user                  |      [x]      |
+| DEL    | /topic/:id                                | Deletes topic user            |      [x]      |
+| DEL    | /response/:id                             | Deletes response              |      [x]      |
+| DEL    | /thread/:id                               | Deletes thread                |      [x]      |
+| DEL    | /notification/id                          | Deletes notification          |      [x]      |
+| DEL    | /topicquestion                            | Deletes questionid-topicid    |      [x]      |
+
 
 
 > Login needs OKTA Authorization
 > Mock User response
-
+```
+{
+    "id": "00ulthapbErVUwVJy4x6",
+    "firstname": "FirstName001",
+    "lastname": "LastName001",
+    "email": "llama001@maildrop.cc\"",
+    "avatarUrl": "https://s3.amazonaws.com/uifaces/faces/twitter/manigm/128.jpg",
+    "created_at": "2020-09-15T16:32:50.202Z",
+    "updated_at": "2020-09-15T16:32:50.202Z"
+}
+```
+> Mock Topic response
+```
+{
+    "id": 1,
+    "leaderid": "00ulthapbErVUwVJy4x6",
+    "topicname": "Testing First Topic",
+    "topicfrequency": "Daily",
+    "contextid": 1,
+    "joincode": "12SZXY",
+    "created_at": "2020-09-15T16:32:50.240Z",
+    "updated_at": "2020-09-15T16:32:50.240Z"
+}
+```
+>Mock Response response
+```
+{
+    "id": 1,
+    "questionid": 1,
+    "response": "This is my response.",
+    "respondedby": "00ulthapbErVUwVJy4x6",
+    "topicid": 1,
+    "created_at": "2020-09-15T16:32:50.250Z",
+    "updated_at": "2020-09-15T16:32:50.250Z"
+}
+```
+>Mock Thread response
+```
+{
+    "id": 1,
+    "responseid": 1,
+    "reply": "This reply is for your responsein my topic",
+    "repliedby": "00ulthapbErVUwVJy4x6",
+    "created_at": "2020-09-15T16:32:50.258Z",
+    "updated_at": "2020-09-15T16:32:50.258Z"
+}
+```
+>Mock topicquestion response
+```
+[
+    {
+        "id": 1,
+        "topicid": 1,
+        "questionid": 1
+    }
+]
+```
 
 # Basic Node API
 
