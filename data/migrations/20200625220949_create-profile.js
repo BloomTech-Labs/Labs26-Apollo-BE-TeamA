@@ -50,6 +50,14 @@ exports.up = (knex) => {
       table.integer('topicid').unsigned().notNullable().references('id').inTable('topics').onDelete('CASCADE').onUpdate('CASCADE');
       table.timestamps(true, true);
     })
+
+    .createTable('topicmembers', function (table) {
+      table.increments();
+      table.integer('topicid').unsigned().notNullable().references('id').inTable('topics').onDelete('CASCADE').onUpdate('CASCADE');
+      table.string('leaderid').unsigned().notNullable().references('id').inTable('users').onDelete('CASCADE').onUpdate('CASCADE');
+      table.string('memberid').unsigned().notNullable().references('id').inTable('users').onDelete('CASCADE').onUpdate('CASCADE');
+    })
+
     .createTable('threads', function (table) {
       table.increments();
       table.integer('responseid').unsigned().notNullable().references('id').inTable('responses').onDelete('CASCADE').onUpdate('CASCADE');
@@ -74,6 +82,7 @@ exports.down = (knex) => {
   .dropTableIfExists('questions')
   .dropTableIfExists('topics')
   .dropTableIfExists('responses')
+  .dropTableIfExists('topicmembers')
   .dropTableIfExists('threads')
   .dropTableIfExists('notifications')
 };
