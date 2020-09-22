@@ -8,7 +8,7 @@ router.get("/", (req, res) => {
 
 const emailService = () => {
   const sgMail = require("@sendgrid/mail");
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  sgMail.setApiKey(process.env.SENDGRIDKEY);
   const msg = {
     to: "apolloappnotify@gmail.com",
     from: "apolloappnotify@gmail.com",
@@ -42,7 +42,6 @@ router.post("/", authRequired, async (req, res) => {
   } else {
     res.status(404).json({ message: "topic missing" });
   }
-  emailService();
 });
 
 module.exports = router;
