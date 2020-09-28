@@ -31,6 +31,8 @@ const userimageRouter = require("./userimage/userimageRouter");
 const notificationRouter = require("./notification/notificationRouter");
 const topicquestionRouter = require("./topic_question/topicquestionRouter");
 const topicmemberRouter = require("./topicmember/topicmemberRouter");
+
+// Router for testing for Sendgrid
 const emailTestRouter = require("./email-test/email.js");
 
 const app = express();
@@ -71,6 +73,8 @@ app.use("/userimage", userimageRouter);
 app.use("/notification", notificationRouter);
 app.use("/topicquestion", topicquestionRouter);
 app.use("/topicmember", topicmemberRouter);
+
+// Router for testing for Sendgrid
 app.use("/email", emailTestRouter);
 
 // catch 404 and forward to error handler
