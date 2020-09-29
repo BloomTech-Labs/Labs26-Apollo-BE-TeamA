@@ -3,19 +3,8 @@ const authRequired = require("../middleware/authRequired");
 const Topics = require("./topicModel");
 const router = express.Router();
 
-// Email Service Function
-const emailService = (email) => {
-  const sgMail = require("@sendgrid/mail");
-  sgMail.setApiKey(process.env.SENDGRIDKEY);
-  const msg = {
-    to: `${email}`,
-    from: "apolloappnotify@gmail.com",
-    subject: "Confirmation from Apollo",
-    text: "Your newly created topic has been posted.",
-    html: "<strong>Your newly created topic has been posted.</strong>",
-  };
-  sgMail.send(msg);
-};
+//EMAIL SERVICE
+const emailService = require("../sendgrid/topicEmail.js");
 
 router.get("/", authRequired, function (req, res) {
   Topics.findAll()
