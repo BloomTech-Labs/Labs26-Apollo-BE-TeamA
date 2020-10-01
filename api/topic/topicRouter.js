@@ -35,34 +35,23 @@ router.get("/:id", authRequired, function (req, res) {
 
 router.post("/", authRequired, async (req, res) => {
   const topic = req.body;
-  if (topic) {
-    const id = topic.id || 0;
-    try {
-      await Topics.findById(id).then(async (pf) => {
-        if (pf == undefined) {
-          //profile not found so lets insert it
-          await Topics.createTopic(topic).then((topic) =>
-            res.status(200).json({ message: "topic created", topic: topic[0] })
-          );
+    Topics.createTopic(topic)
+    .then((topic) => {
+        res.status(200).json({ message: "topic created", topic: topic[0] })
 
           // Call to send email via sendgrid.
           Topics.findEmail(topic.leaderid).then((data) => {
             console.log(data.email);
             emailService(data.email);
-          });
-        } else {
-          res.status(400).json({ message: "topic already exists" });
-        }
-      });
-    } catch (e) {
-      console.error(e);
-      res.status(500).json({ message: e.message });
-    }
-  } else {
-    res.status(404).json({ message: "topic missing" });
-  }
+          })
+        })
+        .catch((error) => {
+          res
+            .status(500)
+            .json({ message: `We are sorry, Internal server error, ${error}` });
+        });
 });
-
+    
 router.post('/:id/membership', (req, res) => {
   const id = req.params.id;
   const profileId = req.body.userid;

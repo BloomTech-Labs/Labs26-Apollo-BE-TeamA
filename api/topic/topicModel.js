@@ -73,7 +73,7 @@ const findById = async (id) => {
   const context_questions = await getTopicContextsQuestions(id);
   const default_context_questions = await getTopicDefaultContextQuestions(id);
   const default_request_questions = await getTopicDefaultRequestQuestions(id);
-  const topic_iteration_requests = await getSurveyRequest(id);
+  const topic_survey_requests = await getSurveyRequest(id);
 
   return {
     ...topicInfo,
@@ -81,7 +81,7 @@ const findById = async (id) => {
     context_questions,
     default_context_questions,
     default_request_questions,
-    topic_iteration_requests,
+    topic_survey_requests,
   };
 };
 
@@ -96,8 +96,6 @@ const addContextQuestionToTopic = async (context_questions, newTopicId) => {
   for (const context of context_questions) {
     const contextQuestion = await db('contextquestions')
       .where({ question: context })
-      .first();
-
     if (contextQuestion) {
       await db('topic_context_questions').insert({
         topicid: newTopicId,
@@ -116,25 +114,23 @@ const addContextQuestionToTopic = async (context_questions, newTopicId) => {
   }
 };
 
-const addRequestQuestionToTopic = async (context_questions, newTopicId) => {
-  for (const context of context_questions) {
-    const contextQuestion = await db('requestquestions')
-      .where({ question: context })
-      .first();
-
-    if (contextQuestion) {
+const addRequestQuestionToTopic = async (request_questions, newTopicId) => {
+  for (const request of request_questions) {
+    const requestQuestion = await db('requestquestions')
+      .where({ question: request })
+    if (requestQuestion) {
       await db('topic_request_questions').insert({
         topicid: newTopicId,
-        contextquestionid: contextQuestion.id,
+        requestquestionid: requestQuestion.id,
       });
     } else {
-      const [contextQuestionId] = await db('requestquestions').insert(
-        { question: context },
+      const [requestQuestionId] = await db('requestquestions').insert(
+        { question: request },
         'id'
       );
       await db('topic_request_questions').insert({
         topicid: newTopicId,
-        contextquestionid: contextQuestionId,
+        requestquestionid: requestQuestionId,
       });
     }
   }
@@ -148,7 +144,7 @@ const createTopic = async (topicInfo) => {
     joincode,
     contextid,
     context_questions,
-    default_questions,
+    request_questions,
   } = topicInfo;
 
   const [newTopicId] = await db('topics').insert(
@@ -157,7 +153,7 @@ const createTopic = async (topicInfo) => {
   );
 
   await addContextQuestionToTopic(context_questions, newTopicId);
-  await addRequestQuestionToTopic(default_questions, newTopicId);
+  await addRequestQuestionToTopic(request_questions, newTopicId);
 
   return await findById(newTopicId);
 };
@@ -182,7 +178,7 @@ const createSurveyRequest = async (topicId, requestQuestions, contextResponses) 
       const [requestQuestionId] = await db('requestquestions').insert(
         {
           question: requestQuestion.question,
-          type: requestQuestion.style,
+          style: requestQuestion.style,
         },
         'id'
       );

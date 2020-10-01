@@ -14,7 +14,7 @@ const getSurveyRequestDetailed = async (surveyRequestId) => {
       'context_questions_response.contextquestionid'
     )
     .select(
-      'ontextquestions.question as context_question',
+      'contextquestions.question as context_question',
       'context_questions_response.response as context_response'
     );
   const requestquestions = await db('survey_request_questions')
@@ -29,7 +29,7 @@ const getSurveyRequestDetailed = async (surveyRequestId) => {
     .select(
       'requestquestions.id',
       'survey_request_questions.content',
-      'requestquestions.type'
+      'requestquestions.style'
     );
   return { ...requestInfo, context_responses, requestquestions };
 };
@@ -51,7 +51,7 @@ const getRequestReplies = async (requestId) => {
         surveyrequestid: requestId,
     })
     .join('users', 'users.id', 'request_questions_response.respondedby')
-    .select('request_questions_response.*', 'users.firstname', 'users.lastname', 'profiles.avatarUrl');
+    .select('request_questions_response.*', 'users.firstname', 'users.lastname', 'users.avatarUrl');
   return replies;
 };
 
