@@ -17,7 +17,7 @@ const getTopicMembers = async (topicid) => {
   return await db('topicmembers')
     .where({ topicid: topicid })
     .join('users', 'users.id', 'topicmembers.memberid')
-    .select('profiles.id', 'profiles.name', 'profiles.avatarUrl');
+    .select('users.id', 'users.firstname', 'users.avatarUrl');
 };
 
 const getTopicContextsQuestions = async (topicid) => {
@@ -34,7 +34,6 @@ const getTopicContextsQuestions = async (topicid) => {
 const getTopicDefaultContextQuestions = async (topicid) => {
   return await db('topic_context_questions')
     .where({ topicid: topicid })
-    .andWhere({default: True})
     .join(
       'contextquestions',
       'topic_context_questions.contextquestionid',
@@ -43,14 +42,13 @@ const getTopicDefaultContextQuestions = async (topicid) => {
     .select(
       'contextquestions.id',
       'contextquestions.question',
-      'contextquestions.type'
+      'contextquestions.style'
     );
 };
 
 const getTopicDefaultRequestQuestions = async (topicid) => {
   return await db('topic_request_questions')
     .where({ topicid: topicid })
-    .andWhere({default: True})
     .join(
       'requestquestions',
       'topic_request_questions.requestquestionid',
@@ -59,7 +57,7 @@ const getTopicDefaultRequestQuestions = async (topicid) => {
     .select(
       'requestquestions.id',
       'requestquestions.question',
-      'requestquestions.type'
+      'requestquestions.style'
     );
 };
 
@@ -98,7 +96,6 @@ const addContextQuestionToTopic = async (context_questions, newTopicId) => {
   for (const context of context_questions) {
     const contextQuestion = await db('contextquestions')
       .where({ question: context })
-      .andWhere({default: True})
       .first();
 
     if (contextQuestion) {
@@ -123,7 +120,6 @@ const addRequestQuestionToTopic = async (context_questions, newTopicId) => {
   for (const context of context_questions) {
     const contextQuestion = await db('requestquestions')
       .where({ question: context })
-      .andWhere({default: True})
       .first();
 
     if (contextQuestion) {
@@ -186,7 +182,7 @@ const createSurveyRequest = async (topicId, requestQuestions, contextResponses) 
       const [requestQuestionId] = await db('requestquestions').insert(
         {
           question: requestQuestion.question,
-          type: requestQuestion.type,
+          type: requestQuestion.style,
         },
         'id'
       );
