@@ -1,4 +1,5 @@
 const db = require("../../data/db-config");
+const Requests = require('../surveyRequest/surveyRequestModel');
 
 const findEmail = async (id) => {
   return await db("users").where({ id }).first().select("email");
@@ -12,8 +13,197 @@ const findBy = (filter) => {
   return db("topics").where(filter);
 };
 
+const getTopicMembers = async (topicid) => {
+  return await db('topicmembers')
+    .where({ topicid: topicid })
+    .join('users', 'users.id', 'topicmembers.memberid')
+    .select('profiles.id', 'profiles.name', 'profiles.avatarUrl');
+};
+
+const getTopicContextsQuestions = async (topicid) => {
+  return await db('topic_context_questions')
+    .where({ topicid: topicid })
+    .join(
+      'contextquestions',
+      'topic_context_questions.contextquestionid',
+      'contextquestions.id'
+    )
+    .select('contextquestions.id', 'contextquestions.question');
+};
+
+const getTopicDefaultContextQuestions = async (topicid) => {
+  return await db('topic_context_questions')
+    .where({ topicid: topicid })
+    .andWhere({default: True})
+    .join(
+      'contextquestions',
+      'topic_context_questions.contextquestionid',
+      'contextquestions.id'
+    )
+    .select(
+      'contextquestions.id',
+      'contextquestions.question',
+      'contextquestions.type'
+    );
+};
+
+const getTopicDefaultRequestQuestions = async (topicid) => {
+  return await db('topic_request_questions')
+    .where({ topicid: topicid })
+    .andWhere({default: True})
+    .join(
+      'requestquestions',
+      'topic_request_questions.requestquestionid',
+      'requestquestions.id'
+    )
+    .select(
+      'requestquestions.id',
+      'requestquestions.question',
+      'requestquestions.type'
+    );
+};
+
+const getSurveyRequest = async (topicid) => {
+  return await db('survey_requests')
+    .where({ topicid: topicid })
+    .select('survey_requests.id', 'survey_requests.created_at');
+};
+
 const findById = async (id) => {
-  return db("topics").where({ id }).first().select("*");
+  const topicInfo = await db('topics').where({ id }).first();
+  const members = await getTopicMembers(id);
+  const context_questions = await getTopicContextsQuestions(id);
+  const default_context_questions = await getTopicDefaultContextQuestions(id);
+  const default_request_questions = await getTopicDefaultRequestQuestions(id);
+  const topic_iteration_requests = await getSurveyRequest(id);
+
+  return {
+    ...topicInfo,
+    members,
+    context_questions,
+    default_context_questions,
+    default_request_questions,
+    topic_iteration_requests,
+  };
+};
+
+const addMemberToTopic = async (topicid, userid) => {
+  await db('topicmembers').insert({
+    topicid: topicid,
+    memberid: userid,
+  });
+};
+
+const addContextQuestionToTopic = async (context_questions, newTopicId) => {
+  for (const context of context_questions) {
+    const contextQuestion = await db('contextquestions')
+      .where({ question: context })
+      .andWhere({default: True})
+      .first();
+
+    if (contextQuestion) {
+      await db('topic_context_questions').insert({
+        topicid: newTopicId,
+        contextquestionid: contextQuestion.id,
+      });
+    } else {
+      const [contextQuestionId] = await db('contextquestions').insert(
+        { question: context },
+        'id'
+      );
+      await db('topic_context_questions').insert({
+        topicid: newTopicId,
+        contextquestionid: contextQuestionId,
+      });
+    }
+  }
+};
+
+const addRequestQuestionToTopic = async (context_questions, newTopicId) => {
+  for (const context of context_questions) {
+    const contextQuestion = await db('requestquestions')
+      .where({ question: context })
+      .andWhere({default: True})
+      .first();
+
+    if (contextQuestion) {
+      await db('topic_request_questions').insert({
+        topicid: newTopicId,
+        contextquestionid: contextQuestion.id,
+      });
+    } else {
+      const [contextQuestionId] = await db('requestquestions').insert(
+        { question: context },
+        'id'
+      );
+      await db('topic_request_questions').insert({
+        topicid: newTopicId,
+        contextquestionid: contextQuestionId,
+      });
+    }
+  }
+};
+
+const createTopic = async (topicInfo) => {
+  const {
+    leaderid,
+    topicname,
+    topicfrequency,
+    joincode,
+    contextid,
+    context_questions,
+    default_questions,
+  } = topicInfo;
+
+  const [newTopicId] = await db('topics').insert(
+    { leaderid, topicname, topicfrequency, contextid, joincode },
+    'id'
+  );
+
+  await addContextQuestionToTopic(context_questions, newTopicId);
+  await addRequestQuestionToTopic(default_questions, newTopicId);
+
+  return await findById(newTopicId);
+};
+
+const createSurveyRequest = async (topicId, requestQuestions, contextResponses) => {
+  const [surveyrequestid] = await db('survey_requests').insert(
+    {
+      topicid: topicId,
+    },
+    'id'
+  );
+  for (const requestQuestion of requestQuestions) {
+    const existingQuestion = await db('topic_request_questions')
+      .where({ question: requestQuestion.question })
+      .first();
+    if (existingQuestion) {
+      await db('survey_request_questions').insert({
+        surveyrequestid: surveyrequestid,
+        requestquestionid: existingQuestion.id,
+      });
+    } else {
+      const [requestQuestionId] = await db('requestquestions').insert(
+        {
+          question: requestQuestion.question,
+          type: requestQuestion.type,
+        },
+        'id'
+      );
+      await db('survey_request_questions').insert({
+        surveyrequestid: surveyrequestid,
+        requestquestionid: requestQuestionId,
+      });
+    }
+  }
+  for (const { id, question } of contextResponses) {
+    await db('context_questions_response').insert({
+      surveyrequestid: surveyrequestid,
+      contextquestionid: id,
+      question,
+    });
+  }
+  return await Requests.getTopicRequestDetailed(surveyrequestid);
 };
 
 const create = async (topic) => {
@@ -29,24 +219,6 @@ const remove = async (id) => {
   return await db("topics").where({ id }).del();
 };
 
-async function getAllAboutTopic(id) {
-  const topic = await db("topics")
-    .select("id", "leaderid", "topicname", "contextid", "joincode")
-    .where({ id: id });
-  topicDetail = {
-    ...topic,
-    questions: await db("topic_questions")
-      .select("id", "questionid")
-      .where({ topicid: id }),
-    responses: await db("responses")
-      .select("id", "questionid", "responses", "respondedby")
-      .where({ topicid: id }),
-    notifications: await db("notifications")
-      .select("id", "sentto", "notification")
-      .where({ topicid: id }),
-  };
-  return topicDetail;
-}
 
 module.exports = {
   findEmail,
@@ -56,5 +228,12 @@ module.exports = {
   create,
   update,
   remove,
-  getAllAboutTopic,
+  createSurveyRequest,
+  createTopic,
+  addRequestQuestionToTopic,
+  addContextQuestionToTopic,
+  addMemberToTopic,
+  getSurveyRequest,
+  getTopicDefaultRequestQuestions,
+  getTopicMembers
 };
