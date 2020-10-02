@@ -23,13 +23,17 @@ const indexRouter = require("./index/indexRouter");
 const profileRouter = require("./profile/profileRouter");
 const dsRouter = require("./dsService/dsRouter");
 const contextRouter = require("./context/contextRouter");
-const questionRouter = require("./question/questionRouter");
+const contextQuestionRouter = require("./contextquestion/contextquestionRouter");
+const contextResponseRouter = require("./contextresponse/contextresponseRouter");
 const topicRouter = require("./topic/topicRouter");
-const responseRouter = require("./response/responseRouter");
+const topicContextQuestionRouter = require("./topicContextQuestion/topiccontextquestionRouter");
+const topicRequestQuestionRouter = require("./topicRequestQuestion/topicrequestquestionRouter");
+const surveyRequestRouter = require("./surveyRequest/surveyRequestRouter");
+const requestQuestionRouter = require("./requestquestion/requestquestionRouter");
+const requestResponseRouter = require("./requestresponse/requestresponseRouter");
 const threadRouter = require("./thread/threadRouter");
 const userimageRouter = require("./userimage/userimageRouter");
 const notificationRouter = require("./notification/notificationRouter");
-const topicquestionRouter = require("./topic_question/topicquestionRouter");
 const topicmemberRouter = require("./topicmember/topicmemberRouter");
 
 // Router for testing for Sendgrid
@@ -65,14 +69,20 @@ app.use("/", indexRouter);
 app.use(["/profile", "/profiles"], profileRouter);
 app.use("/data", dsRouter);
 app.use("/context", contextRouter);
-app.use("/question", questionRouter);
+app.use("/contextresponse", contextResponseRouter);
+app.use("/contextquestion", contextQuestionRouter);
 app.use("/topic", topicRouter);
-app.use("/response", responseRouter);
+app.use("/topiccontextquestion", topicContextQuestionRouter);
+app.use("/topicrequestquestion", topicRequestQuestionRouter);
 app.use("/thread", threadRouter);
 app.use("/userimage", userimageRouter);
 app.use("/notification", notificationRouter);
-app.use("/topicquestion", topicquestionRouter);
 app.use("/topicmember", topicmemberRouter);
+app.use("/surveyrequest", surveyRequestRouter);
+app.use("/requestquestion", requestQuestionRouter);
+app.use("/requestresponse", requestResponseRouter);
+
+
 
 // Router for testing for Sendgrid
 app.use("/email", emailTestRouter);

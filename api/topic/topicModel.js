@@ -35,8 +35,11 @@ async function getAllAboutTopic(id) {
     .where({ id: id });
   topicDetail = {
     ...topic,
-    questions: await db("topic_questions")
-      .select("id", "questionid")
+    contextquestions: await db("topic_context_questions")
+      .select("contextquestionid")
+      .where({ topicid: id }),
+    requestquestions: await db("topic_request_questions")
+      .select("requestquestionid")
       .where({ topicid: id }),
     responses: await db("responses")
       .select("id", "questionid", "responses", "respondedby")
