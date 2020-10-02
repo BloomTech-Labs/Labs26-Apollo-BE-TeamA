@@ -32,56 +32,58 @@ router.get("/:id", authRequired, function (req, res) {
     });
 });
 
+router.get("/:id/details", authRequired, function (req, res) {
+  const id = String(req.params.id);
+  Topics.findById(id)
+    .then((topic) => {
+      if (topic) {
+        Topics.getAllAboutTopic(id).then((topicdetail) => {
+          if (topicdetail) {
+            res.status(200).json(topicdetail);
+          } else {
+            res.status(404).json({
+              message: "Failed to get topic details. Try again later.",
+            });
+          }
+        });
+      } else {
+        res.status(404).json({ error: "TopicNotFound" });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ error: err.message });
+    });
+});
 
 router.post("/", authRequired, async (req, res) => {
   const topic = req.body;
-    Topics.createTopic(topic)
-    .then((topic) => {
-        res.status(200).json({ message: "topic created", topic: topic[0] })
+  if (topic) {
+    const id = topic.id || 0;
+    try {
+      await Topics.findById(id).then(async (pf) => {
+        if (pf == undefined) {
+          //profile not found so lets insert it
+          await Topics.create(topic).then((topic) =>
+            res.status(200).json({ message: "topic created", topic: topic[0] })
+          );
 
           // Call to send email via sendgrid.
           Topics.findEmail(topic.leaderid).then((data) => {
             console.log(data.email);
             emailService(data.email);
-          })
-        })
-        .catch((error) => {
-          res
-            .status(500)
-            .json({ message: `We are sorry, Internal server error, ${error}` });
-        });
+          });
+        } else {
+          res.status(400).json({ message: "topic already exists" });
+        }
+      });
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({ message: e.message });
+    }
+  } else {
+    res.status(404).json({ message: "topic missing" });
+  }
 });
-    
-router.post('/:id/membership', (req, res) => {
-  const id = req.params.id;
-  const profileId = req.body.userid;
-  Topics.addMemberToTopic(id, profileId)
-    .then(() => {
-      res
-        .status(200)
-        .json({ message: `Member ${profileId} is added to the Topic ${id}.` });
-    })
-    .catch((error) => {
-      res
-        .status(500)
-        .json({ message: `We are sorry, Internal server error, ${error}` });
-    });
-});
-
-router.post('/:topicid/surveyrequest', (req, res) => {
-  const topicid = req.params.topicid;
-  const { request_questions, context_responses } = req.body;
-  Topics.createSurveyRequest(topicid, request_questions, context_responses)
-    .then((request) => {
-      res.status(201).json(request);
-    })
-    .catch((error) => {
-      res
-        .status(500)
-        .json({ message: `We are sorry, Internal server error, ${error}` });
-    });
-});
-
 
 router.put("/", authRequired, (req, res) => {
   const topic = req.body;

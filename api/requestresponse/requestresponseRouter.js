@@ -1,10 +1,10 @@
 const express = require("express");
 const authRequired = require("../middleware/authRequired");
-const Responses = require("./responseModel");
+const RequestResponses = require("./requestresponseModel");
 const router = express.Router();
 
 router.get("/", authRequired, function (req, res) {
-  Responses.findAll()
+  RequestResponses.findAll()
     .then((response) => {
       res.status(200).json(response);
     })
@@ -14,9 +14,9 @@ router.get("/", authRequired, function (req, res) {
     });
 });
 
-router.get("/:id", authRequired, function (req, res) {
+router.get("/:surveyrequestid", authRequired, function (req, res) {
   const id = String(req.params.id);
-  Responses.findById(id)
+  RequestResponses.findById(id)
     .then((response) => {
       if (response) {
         res.status(200).json(response);
@@ -29,12 +29,12 @@ router.get("/:id", authRequired, function (req, res) {
     });
 });
 
-router.get("/:id/details", authRequired, function (req, res) {
+router.get("/:surveyrequestid/details", authRequired, function (req, res) {
   const id = String(req.params.id);
-  Responses.findById(id)
+  RequestResponses.findById(id)
     .then((response) => {
       if (response) {
-        Responses.getAllReplyonResponse(id).then((responsedetail) => {
+        RequestResponses.getAllReplyonResponse(id).then((responsedetail) => {
           if (responsedetail) {
             res.status(200).json(responsedetail);
           } else {
@@ -59,10 +59,10 @@ router.post("/", authRequired, async (req, res) => {
   if (response) {
     const id = response.id || 0;
     try {
-      await Responses.findById(id).then(async (pf) => {
+      await RequestResponses.findById(id).then(async (pf) => {
         if (pf == undefined) {
           //profile not found so lets insert it
-          await Responses.create(response).then((response) =>
+          await RequestResponses.create(response).then((response) =>
             res
               .status(200)
               .json({ message: "response created", response: response[0] })
@@ -83,9 +83,9 @@ router.put("/", authRequired, (req, res) => {
   const response = req.body;
   if (response) {
     const id = response.id || 0;
-    Responses.findById(id)
+    RequestResponses.findById(id)
       .then(
-        Responses.update(id, response)
+        RequestResponses.update(id, response)
           .then((updated) => {
             res
               .status(200)
@@ -107,11 +107,11 @@ router.put("/", authRequired, (req, res) => {
   }
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:surveyrequestid", (req, res) => {
   const id = req.params.id;
   try {
-    Responses.findById(id).then((response) => {
-      Responses.remove(response.id).then(() => {
+    RequestResponses.findById(id).then((response) => {
+      RequestResponses.remove(response.id).then(() => {
         res
           .status(200)
           .json({

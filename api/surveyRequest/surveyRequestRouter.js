@@ -1,183 +1,107 @@
-const router = require('express').Router();
-const Requests = require('./surveyRequestModel');
+const express = require("express");
+const authRequired = require("../middleware/authRequired");
+const SurveyRequests = require("./surveyRequestModel");
+const router = express.Router();
 
-/**
- * @swagger
- * components:
- *  schemas:
- *    postReplies:
- *      type: object
- *      required:
- *        - profile_id
- *        - replies
- *      properties:
- *        profile_id:
- *          type: string
- *        replies:
- *          type: array
- *          items:
- *            type: object
- *            properties:
- *              question_id:
- *                type: integer
- *              content:
- *                type: string
- *      example:
- *        profile_id: '00uhjfrwdWAQvD8JV4x6'
- *        replies: [{question_id: 1, content: "String"}, {question_id: 2, content: "String"}, {question_id: 3, content: "String"}]
- */
-
-/**
- * @swagger
- * components:
- *  parameters:
- *    requestId:
- *      name: id
- *      in: path
- *      description: ID of the request that you want to post replies to.
- *      required: true
- *      example: 1
- *      schema:
- *        type: integer
- * /requests/{requestId}:
- *  post:
- *    description: Posting to this endpoint posts replies to the questions associated with the request.
- *    summary: Posting to this endpoints adds replies to the request's questions.
- *    security:
- *      - okta: []
- *    tags:
- *      - requests
- *    parameters:
- *      - $ref: '#/components/parameters/requestId'
- *    requestBody:
- *      description: Data to send up. Must include all the data below to reply to request questions.
- *      content:
- *        application/json:
- *          schema:
- *            $ref: '#/components/schemas/postReplies'
- *    responses:
- *      201:
- *        description:
- *        content:
- *          application/json:
- *            schema:
- *              type: array
- *              items:
- *                $ref: '#/components/schemas/201Replies'
- *              example:
- *                [{id: 1,
- *                  posted_at: 2020-09-28T00:37:22.901Z,
- *                  iteration_id: 1,
- *                  question_id: 1,
- *                  profile_id: 00ulthapbErVUwVJy4x6,
- *                  content: String,
- *                  name: String,
- *                  avatarUrl: String}]
- *      401:
- *        $ref: '#/components/responses/UnauthorizedError'
- *      403:
- *        $ref: '#/components/responses/UnauthorizedError'
- *
- */
-
-router.post('/:id', (req, res) => {
-  const { id } = req.params;
-  const { userid, replies } = req.body;
-
-  Requests.addRequestReplies(id, userid, replies).then((requestInfo) => {
-    if (requestInfo) {
-      res.status(200).json(requestInfo);
-    } else {
-      res.status(500).json({ message: 'We are sorry, Internal server error.' });
-    }
-  });
+router.get("/", authRequired, function (req, res) {
+  SurveyRequests.findAll()
+    .then((surveyRequest) => {
+      res.status(200).json(surveyRequest);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: err.message });
+    });
 });
 
-
-router.get('/:id', (req, res) => {
-  const { id } = req.params;
-
-  Requests.getRequestDetailed(id)
-    .then((requestInfo) => {
-      if (requestInfo.id) {
-        res.status(200).json(requestInfo);
+router.get("/:id", authRequired, function (req, res) {
+  const id = String(req.params.id);
+  SurveyRequests.findById(id)
+    .then((surveyRequest) => {
+      if (surveyRequest) {
+        res.status(200).json(surveyRequest);
       } else {
-        res
-          .status(404)
-          .json({ message: 'Could not find survey request with that id' });
+        res.status(404).json({ error: "surveyRequestNotFound" });
       }
     })
-    .catch((error) => {
-      console.log(error);
-      res.status(500).json({ message: 'We are sorry, Internal server error.' });
+    .catch((err) => {
+      res.status(500).json({ error: err.message });
     });
 });
 
-router.get('/:id/questions', (req, res) => {
-  const { id } = req.params;
-  Requests.getRequestQuestions(id)
-    .then((questions) => {
-      res.status(200).json(questions);
-    })
-    .catch((error) => {
-      console.log(error);
-      res.status(500).json({ message: 'We are sorry, Internal server error.' });
-    });
-});
-
-router.get('/:id/replies', (req, res) => {
-  const { id } = req.params;
-  Requests.getRequestReplies(id)
-    .then(async (replies) => {
-      const status = await Requests.getMemberRepliedStatus(id, 1);
-      const whoHasReplied = await Requests.getWhoHasReplied(id);
-
-      const filteredReplies = whoHasReplied.reduce((acc, curr) => {
-        let username;
-        let userAvatarUrl;
-
-        const foundReplies = replies
-          .filter((reply) => reply.userid === curr)
-          .map(
-            ({
-              id,
-              created_at,
-              surveyrequestid,
-              requestquestionid,
-              question,
-              firstname,
-              avatarUrl,
-            }) => {
-              if (!username) username = firstname;
-              return {
-                id,
-                created_at,
-                surveyrequestid,
-                requestquestionid,
-                question,
-                };
-            }
+router.post("/", authRequired, async (req, res) => {
+  const surveyRequest = req.body;
+  if (surveyRequest) {
+    const id = surveyRequest.id || 0;
+    try {
+      await SurveyRequests.findById(id).then(async (pf) => {
+        if (pf == undefined) {
+          //profile not found so lets insert it
+          await SurveyRequests.create(surveyRequest).then((surveyRequest) =>
+            res
+              .status(200)
+              .json({ message: "surveyRequest created", surveyRequest: surveyRequest[0] })
           );
-
-        acc.push({
-          userid: curr,
-          firstname: username,
-          avatarUrl: userAvatarUrl,
-          replies: foundReplies,
-        });
-
-        return acc;
-      }, []);
-
-      res.status(200).json({
-        request_replies: filteredReplies,
-        member_reply_statuses: status,
+        } else {
+          res.status(400).json({ message: "surveyRequest already exists" });
+        }
       });
-    })
-    .catch((error) => {
-      console.log(error);
-      res.status(500).json({ message: 'We are sorry, Internal server error.' });
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({ message: e.message });
+    }
+  } else {
+    res.status(404).json({ message: "surveyRequest missing" });
+  }
+});
+
+router.put("/", authRequired, (req, res) => {
+  const surveyRequest = req.body;
+  if (surveyRequest) {
+    const id = surveyRequest.id || 0;
+    SurveyRequests.findById(id)
+      .then(
+        SurveyRequests.update(id, surveyRequest)
+          .then((updated) => {
+            res
+              .status(200)
+              .json({ message: "surveyRequest created", surveyRequest: updated[0] });
+          })
+          .catch((err) => {
+            res.status(500).json({
+              message: `Could not update surveyRequest '${id}'`,
+              error: err.message,
+            });
+          })
+      )
+      .catch((err) => {
+        res.status(404).json({
+          message: `Could not find surveyRequest '${id}'`,
+          error: err.message,
+        });
+      });
+  }
+});
+
+router.delete("/:id", (req, res) => {
+  const id = req.params.id;
+  try {
+    SurveyRequests.findById(id).then((surveyRequest) => {
+      SurveyRequests.remove(surveyRequest.id).then(() => {
+        res
+          .status(200)
+          .json({
+            message: `surveyRequest '${id}' was deleted.`,
+            surveyRequest: surveyRequest,
+          });
+      });
     });
+  } catch (err) {
+    res.status(500).json({
+      message: `Could not delete surveyRequest with ID: ${id}`,
+      error: err.message,
+    });
+  }
 });
 
 module.exports = router;

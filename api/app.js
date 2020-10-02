@@ -24,9 +24,13 @@ const profileRouter = require("./profile/profileRouter");
 const dsRouter = require("./dsService/dsRouter");
 const contextRouter = require("./context/contextRouter");
 const contextQuestionRouter = require("./contextquestion/contextquestionRouter");
+const contextResponseRouter = require("./contextresponse/contextresponseRouter");
 const topicRouter = require("./topic/topicRouter");
+const topicContextQuestionRouter = require("./topicContextQuestion/topiccontextquestionRouter");
+const topicRequestQuestionRouter = require("./topicRequestQuestion/topicrequestquestionRouter");
 const surveyRequestRouter = require("./surveyRequest/surveyRequestRouter");
-const responseRouter = require("./response/responseRouter");
+const requestQuestionRouter = require("./requestquestion/requestquestionRouter");
+const requestResponseRouter = require("./requestresponse/requestresponseRouter");
 const threadRouter = require("./thread/threadRouter");
 const userimageRouter = require("./userimage/userimageRouter");
 const notificationRouter = require("./notification/notificationRouter");
@@ -65,14 +69,18 @@ app.use("/", indexRouter);
 app.use(["/profile", "/profiles"], profileRouter);
 app.use("/data", dsRouter);
 app.use("/context", contextRouter);
+app.use("/contextresponse", contextResponseRouter);
+app.use("/contextquestion", contextQuestionRouter);
 app.use("/topic", topicRouter);
-app.use("/response", responseRouter);
-app.use("/contextquest", contextQuestionRouter);
+app.use("/topiccontextquestion", topicContextQuestionRouter);
+app.use("/topicrequestquestion", topicRequestQuestionRouter);
 app.use("/thread", threadRouter);
 app.use("/userimage", userimageRouter);
 app.use("/notification", notificationRouter);
 app.use("/topicmember", topicmemberRouter);
 app.use("/surveyrequest", surveyRequestRouter);
+app.use("/requestquestion", requestQuestionRouter);
+app.use("/requestresponse", requestResponseRouter);
 
 
 
