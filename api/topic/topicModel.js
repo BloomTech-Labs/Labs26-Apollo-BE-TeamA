@@ -41,9 +41,6 @@ async function getAllAboutTopic(id) {
     requestquestions: await db("topic_request_questions")
       .select("requestquestionid")
       .where({ topicid: id }),
-    responses: await db("responses")
-      .select("id", "questionid", "responses", "respondedby")
-      .where({ topicid: id }),
     notifications: await db("notifications")
       .select("id", "sentto", "notification")
       .where({ topicid: id }),
