@@ -5,8 +5,12 @@ const router = express.Router();
 const db = require("../../data/db-config.js");
 
 const questions = () => {
-  const correct = db("questions").select("*");
+  const correct = db("contextquestions").select("*");
   return correct;
+};
+
+const requests = () => {
+  return db("requestquestions");
 };
 
 const requestQuestions = () => {
@@ -20,14 +24,16 @@ router.get("/", (req, res) => {
 router.get("/c", (req, res) => {
   questions().then((data) => {
     // console.log(data.slice(0, 3));
-    res.json(data.slice(0, 3));
+    // res.json(data.slice(0, 3));
+    res.json(data);
   });
 });
 
 router.get("/r", (req, res) => {
-  questions().then((data) => {
+  requests().then((data) => {
     // console.log(data.slice(3));
-    res.json(data.slice(3));
+    // res.json(data.slice(3));
+    res.json(data);
   });
 });
 
