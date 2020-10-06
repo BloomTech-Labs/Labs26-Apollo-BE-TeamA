@@ -1,6 +1,8 @@
 const express = require("express");
 const authRequired = require("../middleware/authRequired");
 const Topics = require("./topicModel");
+const Topic_Contexts = require("../topicContextQuestion/topiccontextquestionModel")
+const Topic_Requests = require("../topicRequestQuestion/topicrequestquestionModel")
 const router = express.Router();
 
 //EMAIL SERVICE
@@ -66,6 +68,14 @@ router.post("/", authRequired, async (req, res) => {
           await Topics.create(topic).then((topic) =>
             res.status(200).json({ message: "topic created", topic: topic[0] })
           );
+
+        //   await Topic_Contexts.create(topic_question).then((topic_question) => 
+        //     res.status(200).json({ message: "topic_question created", topic: topic[0] })
+        //   );
+
+        //   await Topic_Requests.create(topic_question).then((topic_question) => 
+        //     res.status(200).json({ message: "topic_question created", topic: topic[0] })
+        // );
 
           // Call to send email via sendgrid.
           Topics.findEmail(topic.leaderid).then((data) => {
