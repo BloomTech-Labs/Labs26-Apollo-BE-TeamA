@@ -1,6 +1,10 @@
 1
 /var/lib/postgresql/data
+<<<<<<< HEAD
 1601578330
+=======
+1601665809
+>>>>>>> 01da1c376020b17bfb402417e9ba435a4887ef8a
 5432
 /var/run/postgresql
 *
