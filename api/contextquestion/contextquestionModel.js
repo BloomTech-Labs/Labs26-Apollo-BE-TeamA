@@ -9,7 +9,7 @@ const findBy = (filter) => {
 };
 
 const getDefaultContextQuestion = async() => {
-  return db('contextquestions').where( {default: True});
+  return db('contextquestions').where( {default: "True"});
 };
 
 const findById = async (id) => {
