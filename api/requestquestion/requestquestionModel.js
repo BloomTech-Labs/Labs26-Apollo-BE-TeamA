@@ -5,7 +5,7 @@ const findAll = async () => {
 };
 
 const getDefaultRequestQuestion = async () => {
-  return await db('requestquestions').where ( {default: True});
+  return await db('requestquestions').where ( {default: "True"});
 };
 
 const findBy = (filter) => {
