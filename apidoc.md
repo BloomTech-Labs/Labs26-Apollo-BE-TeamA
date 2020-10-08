@@ -19,7 +19,7 @@ Response:
 }
 
 | PROFILE |
-| ------- |
+| ------- | ---------- |
 | GET     | /profile |
 | GET     | /profiles |
 | GET     | /profile/:id |
