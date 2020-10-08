@@ -18,7 +18,7 @@ Response:
 "timestamp": 1602137863804
 }
 
-| PROFILE | --------------         |
+| PROFILE | --------               |
 | ------- | ----------             |
 | GET     | /profile               |
 | GET     | /profiles              |
