@@ -1,24 +1,22 @@
-### API Documentation
-
-## | First Header | Second Header |
-
 ## API Documentation
 
 (Draft)
 
 ### Base Url https://apollo-a-api.herokuapp.com/
 
-| API |
-| --- |
-| GET | / |
+| API | -- |
+| --- | -- |
+| GET | /  |
 
 Response:
+```
 {
 "api": "up",
 "timestamp": 1602137863804
 }
+```
 
-| PROFILE | --------               |
+| PROFILE | Endpoint               |
 | ------- | ----------             |
 | GET     | /profile               |
 | GET     | /profiles              |
