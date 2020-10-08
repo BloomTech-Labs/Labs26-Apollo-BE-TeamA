@@ -18,12 +18,12 @@ Response:
 "timestamp": 1602137863804
 }
 
-| PROFILE |
-| ------- | ---------- |
-| GET     | /profile |
-| GET     | /profiles |
-| GET     | /profile/:id |
-| GET     | /profile/:id/details |
-| POST    | /profile |
-| PUT     | /profile/:id |
-| DELETE  | /profile/:id |
+| PROFILE | --------------         |
+| ------- | ----------             |
+| GET     | /profile               |
+| GET     | /profiles              |
+| GET     | /profile/:id           |
+| GET     | /profile/:id/details   |
+| POST    | /profile               |
+| PUT     | /profile/:id           |
+| DELETE  | /profile/:id           |
