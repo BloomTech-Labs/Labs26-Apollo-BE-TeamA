@@ -16,6 +16,10 @@ const create = async (question) => {
   return db('topic_context_questions').insert(question).returning('*');
 };
 
+// const createDefault = async (question) => {
+//   return db('topic_context_questions').insert(question).returning('*');
+// };
+
 const update = (id, question) => {
   console.log(question);
   return db('topic_context_questions')

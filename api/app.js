@@ -38,6 +38,8 @@ const topicmemberRouter = require("./topicmember/topicmemberRouter");
 
 // Router for testing for Sendgrid
 const emailTestRouter = require("./email-test/email.js");
+// Router for testing endpoints
+const testQuestions = require("./testFolder/questions.js");
 
 const app = express();
 
@@ -86,6 +88,8 @@ app.use("/requestresponse", requestResponseRouter);
 
 // Router for testing for Sendgrid
 app.use("/email", emailTestRouter);
+//Router for testing endpoints
+app.use("/q", testQuestions);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

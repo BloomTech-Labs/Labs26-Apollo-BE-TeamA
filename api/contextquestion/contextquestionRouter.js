@@ -14,6 +14,18 @@ router.get("/", authRequired, function (req, res) {
     });
 });
 
+router.get("/getdefaultcontextquestion", authRequired, function (req, res) {
+  Questions.getDefaultContextQuestion()
+    .then((question) => {
+      res.status(200).json(question);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: err.message });
+    });
+});
+
+
 router.get("/:id", authRequired, function (req, res) {
   const id = String(req.params.id);
   Questions.findById(id)

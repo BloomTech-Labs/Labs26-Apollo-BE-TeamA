@@ -8,6 +8,10 @@ const findBy = (filter) => {
   return db('contextquestions').where(filter);
 };
 
+const getDefaultContextQuestion = async() => {
+  return db('contextquestions').where( {default: "True"});
+};
+
 const findById = async (id) => {
   return db('contextquestions').where({ id }).first().select('*');
 };
@@ -36,4 +40,5 @@ module.exports = {
   create,
   update,
   remove,
+  getDefaultContextQuestion
 };

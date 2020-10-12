@@ -1,27 +1,31 @@
 const db = require("../../data/db-config");
 
 const findAll = async () => {
-  return await db("survey_request_questions");
+  return await db("requestquestions");
+};
+
+const getDefaultRequestQuestion = async () => {
+  return await db("requestquestions").where({ default: "True" });
 };
 
 const findBy = (filter) => {
-  return db("survey_request_questions").where(filter);
+  return db("requestquestions").where(filter);
 };
 
 const findById = async (id) => {
-  return db("survey_request_questions")
+  return db("requestquestions")
     .where({ surveyrequestid: id })
     .first()
     .select("*");
 };
 
 const create = async (question) => {
-  return db("survey_request_questions").insert(question).returning("*");
+  return db("requestquestions").insert(question).returning("*");
 };
 
 const update = (id, question) => {
   console.log(question);
-  return db("survey_request_questions")
+  return db("requestquestions")
     .where({ surveyrequestid: id })
     .first()
     .update(question)
@@ -29,9 +33,7 @@ const update = (id, question) => {
 };
 
 const remove = async (id) => {
-  return await db("survey_request_questions")
-    .where({ surveyrequestid: id })
-    .del();
+  return await db("requestquestions").where({ surveyrequestid: id }).del();
 };
 
 module.exports = {
@@ -41,4 +43,5 @@ module.exports = {
   create,
   update,
   remove,
+  getDefaultRequestQuestion,
 };
