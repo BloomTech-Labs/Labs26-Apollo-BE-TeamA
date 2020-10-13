@@ -13,6 +13,15 @@ router.get("/", authRequired, function (req, res) {
       res.status(500).json({ message: err.message });
     });
 });
+router.get("/getDefaultRequestQuestion", (req, res) => {
+  Questions.getDefaultRequestQuestion()
+    .then((question) => {
+      res.status(200).json({ questions: question.slice(0, 3) });
+    })
+    .catch((err) => {
+      res.status(400).json({ error: err.message });
+    });
+});
 
 router.get("/:id", authRequired, function (req, res) {
   const id = String(req.params.id);

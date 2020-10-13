@@ -157,19 +157,24 @@ Response:
 
 ## REQUEST QUESTION
 
-| Request | Endpoint             | Description                |
-| ------- | -------------------- | -------------------------- |
-| GET     | /requestquestion     | Gets request question info |
-| POST    | /requestquestion     | Posts new request question |
-| PUT     | /requestquestion     | Edits request question     |
-| DELETE  | /requestquestion/:id | Deletes request question   |
+| Request | Endpoint             | Description                      |
+| ------- | -------------------- | -------------------------------- |
+| GET     | /requestquestion     | Gets request question info       |
+| GET     | /requestquestion/:id | Gets request question info by id |
+| POST    | /requestquestion     | Posts new request question       |
+| PUT     | /requestquestion     | Edits request question           |
+| DELETE  | /requestquestion/:id | Deletes request question         |
 
 #### JSON for POST & PUT
 
 ```
 {
-
+    "id": 5,  // must be unique
+    "style": "Text", // required...options are ['Text', 'Star Rating', 'Yes or No', 'Multiple Choice', 'URL']
+    "question": "What are will you do today?", // must be unique
+    "default": true // optional
 }
+
 ```
 
 ## REQUEST RESPONSE
