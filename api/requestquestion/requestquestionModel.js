@@ -13,10 +13,7 @@ const findBy = (filter) => {
 };
 
 const findById = async (id) => {
-  return db("requestquestions")
-    .where({ surveyrequestid: id })
-    .first()
-    .select("*");
+  return db("requestquestions").where({ id: id }).first().select("*");
 };
 
 const create = async (question) => {
