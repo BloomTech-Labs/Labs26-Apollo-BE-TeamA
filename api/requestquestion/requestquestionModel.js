@@ -1,36 +1,36 @@
-const db = require('../../data/db-config');
+const db = require("../../data/db-config");
 
 const findAll = async () => {
-  return await db('requestquestions');
+  return await db("requestquestions");
 };
 
 const getDefaultRequestQuestion = async () => {
-  return await db('requestquestions').where ( {default: "True"});
+  return await db("requestquestions").where({ default: "True" });
 };
 
 const findBy = (filter) => {
-  return db('requestquestions').where(filter);
+  return db("requestquestions").where(filter);
 };
 
 const findById = async (id) => {
-  return db('requestquestions').where({ surveyrequestid: id }).first().select('*');
+  return db("requestquestions").where({ id: id }).first().select("*");
 };
 
 const create = async (question) => {
-  return db('requestquestions').insert(question).returning('*');
+  return db("requestquestions").insert(question).returning("*");
 };
 
 const update = (id, question) => {
   console.log(question);
-  return db('requestquestions')
+  return db("requestquestions")
     .where({ surveyrequestid: id })
     .first()
     .update(question)
-    .returning('*');
+    .returning("*");
 };
 
 const remove = async (id) => {
-  return await db('requestquestions').where({ surveyrequestid: id }).del();
+  return await db("requestquestions").where({ surveyrequestid: id }).del();
 };
 
 module.exports = {
@@ -40,5 +40,5 @@ module.exports = {
   create,
   update,
   remove,
-  getDefaultRequestQuestion
+  getDefaultRequestQuestion,
 };
