@@ -14,8 +14,17 @@ router.get("/", authRequired, function (req, res) {
     });
 });
 
-router.get("/:surveyrequestid", authRequired, function (req, res) {
-  const id = String(req.params.id);
+router.get("/:id", authRequired, function (req, res) {
+  const id = req.params.id;
+  // const dataArr = [];
+  // const data = RequestResponses.findAll().then((data) => {
+  //   const dataArr = [];
+  //   dataArr.push(data);
+  //   console.log(dataArr);
+  // });
+  // dataArr.push(data);
+  // console.log(dataArr);
+
   RequestResponses.findById(id)
     .then((response) => {
       if (response) {
@@ -38,11 +47,9 @@ router.get("/:surveyrequestid/details", authRequired, function (req, res) {
           if (responsedetail) {
             res.status(200).json(responsedetail);
           } else {
-            res
-              .status(404)
-              .json({
-                message: "Failed to get response detail. Try again later.",
-              });
+            res.status(404).json({
+              message: "Failed to get response detail. Try again later.",
+            });
           }
         });
       } else {
@@ -56,27 +63,37 @@ router.get("/:surveyrequestid/details", authRequired, function (req, res) {
 
 router.post("/", authRequired, async (req, res) => {
   const response = req.body;
-  if (response) {
-    const id = response.id || 0;
-    try {
-      await RequestResponses.findById(id).then(async (pf) => {
-        if (pf == undefined) {
-          //profile not found so lets insert it
-          await RequestResponses.create(response).then((response) =>
-            res
-              .status(200)
-              .json({ message: "response created", response: response[0] })
-          );
-        } else {
-          res.status(400).json({ message: "response already exists" });
-        }
-      });
-    } catch (e) {
-      res.status(500).json({ message: e.message });
-    }
-  } else {
-    res.status(404).json({ message: "response missing" });
-  }
+
+  RequestResponses.create(response)
+    .then((response) => {
+      res
+        .status(200)
+        .json({ message: "response created", response: response[0] });
+    })
+    .catch((err) => {
+      res.status(400).json({ error: err.message });
+    });
+  //   if (response) {
+  //     const id = response.id || 0;
+  //     try {
+  //       await RequestResponses.findById(id).then(async (pf) => {
+  //         if (pf == undefined) {
+  //           //profile not found so lets insert it
+  //           await RequestResponses.create(response).then((response) => {
+  //             res
+  //               .status(200)
+  //               .json({ message: "response created", response: response[0] });
+  //           });
+  //         } else {
+  //           res.status(400).json({ message: "response already exists" });
+  //         }
+  //       });
+  //     } catch (e) {
+  //       res.status(500).json({ message: e.message });
+  //     }
+  //   } else {
+  //     res.status(404).json({ message: "response missing" });
+  //   }
 });
 
 router.put("/", authRequired, (req, res) => {
@@ -107,25 +124,31 @@ router.put("/", authRequired, (req, res) => {
   }
 });
 
-router.delete("/:surveyrequestid", (req, res) => {
+router.delete("/:id", (req, res) => {
   const id = req.params.id;
-  try {
-    RequestResponses.findById(id).then((response) => {
-      RequestResponses.remove(response.id).then(() => {
-        res
-          .status(200)
-          .json({
-            message: `response '${id}' was deleted.`,
-            response: response,
-          });
+
+  RequestResponses.remove(id)
+    .then((data) => {
+      res.status(200).json({
+        message: `Removed ${data} request response, ID: ${id} successfully`,
       });
-    });
-  } catch (err) {
-    res.status(500).json({
-      message: `Could not delete response with ID: ${id}`,
-      error: err.message,
-    });
-  }
+    })
+    .catch((err) => res.status(400).json({ message: err.error }));
+  // try {
+  //   RequestResponses.findById(id).then((response) => {
+  //     RequestResponses.remove(response.id).then(() => {
+  //       res.status(200).json({
+  //         message: `response '${id}' was deleted.`,
+  //         response: response,
+  //       });
+  //     });
+  //   });
+  // } catch (err) {
+  //   res.status(500).json({
+  //     message: `Could not delete response with ID: ${id}`,
+  //     error: err.message,
+  //   });
+  // }
 });
 
 module.exports = router;
