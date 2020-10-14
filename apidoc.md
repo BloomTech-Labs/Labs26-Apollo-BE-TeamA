@@ -157,13 +157,14 @@ Response:
 
 ## REQUEST QUESTION
 
-| Request | Endpoint             | Description                      |
-| ------- | -------------------- | -------------------------------- |
-| GET     | /requestquestion     | Gets request question info       |
-| GET     | /requestquestion/:id | Gets request question info by id |
-| POST    | /requestquestion     | Posts new request question       |
-| PUT     | /requestquestion     | Edits request question           |
-| DELETE  | /requestquestion/:id | Deletes request question         |
+| Request | Endpoint                                   | Description                        |
+| ------- | ------------------------------------------ | ---------------------------------- |
+| GET     | /requestquestion                           | Gets request question info         |
+| GET     | /requestquestion/getDefaultRequestQuestion | Gets default request question info |
+| GET     | /requestquestion/:id                       | Gets request question info by id   |
+| POST    | /requestquestion                           | Posts new request question         |
+| PUT     | /requestquestion                           | Edits request question             |
+| DELETE  | /requestquestion/:id                       | Deletes request question           |
 
 #### JSON for POST & PUT
 
@@ -179,20 +180,24 @@ Response:
 
 ## REQUEST RESPONSE
 
-| Request | Endpoint                                  | Description                               |
-| ------- | ----------------------------------------- | ----------------------------------------- |
-| GET     | /requestresponse                          | Gets request response info                |
-| GET     | /requestresponse/:surveyrequestid         | Gets request response by :id info         |
-| GET     | /requestresponse/:surveyrequestid/details | Gets request response details by :id info |
-| POST    | /requestresponse                          | Posts new request response                |
-| PUT     | /requestresponse                          | Edits request response                    |
-| DELETE  | /requestresponse/:id                      | Deletes request response                  |
+| Request | Endpoint                                  | Description                                 |
+| ------- | ----------------------------------------- | ------------------------------------------- |
+| GET     | /requestresponse                          | Gets request response info                  |
+| GET     | /requestresponse/:surveyrequestid         | Gets request response by :id info           |
+| GET     | /requestresponse/:surveyrequestid/details | Gets request response details by :id info   |
+| POST    | /requestresponse                          | Posts new request response                  |
+| PUT     | /requestresponse                          | Edits request response                      |
+| DELETE  | /requestresponse/:surveyrequestid         | Deletes request response by surveyrequestid |
 
 #### JSON for POST & PUT
 
 ```
 {
-
+   "id": 5, //unique
+   "surveyrequestid": 1, // required
+   "requestquestionid": 5, // required
+   "response": "Backend", // required
+   "respondedby": "wps592ne5uyxubbbiaj8" //required, user id has to be in profile table.
 }
 
 ```

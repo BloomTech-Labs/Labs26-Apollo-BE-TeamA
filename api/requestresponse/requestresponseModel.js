@@ -1,28 +1,30 @@
-const db = require('../../data/db-config');
+const db = require("../../data/db-config");
 
 const findAll = async () => {
-  return await db('request_questions_response');
+  return await db("request_questions_response");
 };
 
 const findBy = (filter) => {
-  return db('request_questions_response').where(filter);
+  return db("request_questions_response").where(filter);
 };
 
 const findById = async (id) => {
-  return db('request_questions_response').where({surveyrequestid: id }).first().select('*');
+  return db("request_questions_response")
+    .where({ surveyrequestid: id })
+    .select("*");
 };
 
 const create = async (response) => {
-  return db('request_questions_response').insert(response).returning('*');
+  return db("request_questions_response").insert(response).returning("*");
 };
 
 const update = (id, response) => {
   console.log(response);
-  return db('request_questions_response')
+  return db("request_questions_response")
     .where({ surveyrequestid: id })
     .first()
     .update(response)
-    .returning('*');
+    .returning("*");
 };
 
 async function getAllReplyonResponse(id) {
@@ -35,17 +37,23 @@ async function getAllReplyonResponse(id) {
       .select("requestquestionid")
       .where({ surveyrequestid: id }),
     responses: await db("request_questions_response")
-      .select("id", "surveyrequestid", "questionrequestid", "response", "respondedby")
+      .select(
+        "id",
+        "surveyrequestid",
+        "questionrequestid",
+        "response",
+        "respondedby"
+      )
       .where({ surveyrequestid: id }),
   };
   return topicDetail;
 }
 
-
 const remove = async (id) => {
-  return await db('request_questions_response').where({ surveyrequestid: id }).del();
+  return await db("request_questions_response")
+    .where({ surveyrequestid: id })
+    .del();
 };
-
 
 module.exports = {
   findAll,
@@ -54,5 +62,5 @@ module.exports = {
   create,
   update,
   remove,
-  getAllReplyonResponse
+  getAllReplyonResponse,
 };
